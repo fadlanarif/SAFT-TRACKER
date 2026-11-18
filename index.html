@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - SAFT Advisory Performance Tracker (Live Demo)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 text-gray-800 min-h-screen">
+
+    <!-- Banner Mod Demo Portfolio -->
+    <div class="bg-gray-900 text-purple-200 text-[11px] py-1.5 px-4 text-center font-medium">
+        🔍 <span class="font-bold text-white">INTERACTIVE PORTFOLIO DEMO:</span> Paparan terus Agent Dashboard SAFT Tracker (Data disimpan sementara dalam pelayar).
+    </div>
+
+    <!-- Navigation bahagian atas -->
+    <nav class="bg-white border-b border-gray-300 px-6 py-4 flex flex-wrap justify-between items-center shadow-sm">
+        <div class="flex items-center space-x-3">
+            <span class="bg-[#5B3E7D] text-white px-3 py-1 rounded-lg text-xs font-bold uppercase tracking-wider">SAFT Tracker</span>
+            <h1 class="text-xl font-bold tracking-wide text-gray-900">by SAFt KT IGNITE</h1>
+        </div>
+        <div class="flex items-center space-x-4 mt-2 sm:mt-0">
+            <!-- Profil Ejen (Boleh Ditekan) -->
+            <button onclick="openProfileModal()" class="flex items-center space-x-3 hover:bg-purple-50 p-1.5 rounded-xl transition duration-150 border border-transparent hover:border-purple-200">
+                <img id="navProfilePic" src="https://ui-avatars.com/api/?name=NOOR+HANIS+HASSAN&background=5B3E7D&color=fff" alt="Profile Picture" class="w-10 h-10 rounded-full object-cover border-2 border-[#5B3E7D] shadow-sm">
+                <div class="text-right">
+                    <p id="navAgentName" class="text-sm font-bold text-gray-800 leading-tight">NOOR HANIS BINTI HASSAN</p>
+                    <p class="text-xs text-[#5B3E7D] font-bold">Code: HHC00025</p>
+                </div>
+            </button>
+
+            <button onclick="resetDemoData()" class="bg-gray-200 hover:bg-gray-300 text-gray-800 text-xs font-bold px-3 py-2 rounded-xl transition shadow-sm" title="Set semula data demo asal">
+                Reset Demo
+            </button>
+        </div>
+    </nav>
+
+    <!-- Notifikasi Berjaya -->
+    <div id="toastBanner" class="hidden max-w-7xl mx-auto px-4 mt-4">
+        <div id="toastMessage" class="p-3 bg-green-100 border border-green-400 text-green-800 text-xs font-bold rounded-xl text-center"></div>
+    </div>
+
+    <!-- Kandungan Utama -->
+    <div class="max-w-7xl mx-auto px-4 py-8 grid grid-cols-1 lg:grid-cols-3 gap-8">
+        
+        <!-- Bahagian Kiri (2 Kolum): Leaderboard & Metrik Pembentangan -->
+        <div class="lg:col-span-2 space-y-6">
+            
+            <!-- Kad Header Pembentangan -->
+            <div class="bg-[#5B3E7D] text-white p-6 rounded-2xl shadow-md flex justify-between items-center">
+                <div>
+                    <h2 class="text-2xl font-extrabold">My Progress</h2>
+                    <p class="text-xs text-purple-200 mt-1">Sesi Pembentangan Prestasi Bulan: <span class="font-bold underline" id="currentMonthLabel">November 2026</span></p>
+                </div>
+                <div class="text-right">
+                    <span class="text-xs text-purple-200 uppercase block font-semibold">Status :</span>
+                    <span class="bg-white/20 text-white border border-white/40 text-xs px-3 py-1 rounded-full font-bold">LIVE UPDATE</span>
+                </div>
+            </div>
+
+            <!-- Kad Ringkasan Metrik Ejen Semasa -->
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                <div class="bg-[#C8BEC3] p-4 rounded-xl shadow-sm text-center border border-gray-300">
+                    <span class="text-[10px] font-bold text-gray-700 uppercase">P (Presentation)</span>
+                    <p id="cardP" class="text-xl font-extrabold text-[#5B3E7D] mt-1">5</p>
+                </div>
+                <div class="bg-[#C8BEC3] p-4 rounded-xl shadow-sm text-center border border-gray-300">
+                    <span class="text-[10px] font-bold text-gray-700 uppercase">C (Close Case)</span>
+                    <p id="cardC" class="text-xl font-extrabold text-[#5B3E7D] mt-1">2</p>
+                </div>
+                <div class="bg-[#C8BEC3] p-4 rounded-xl shadow-sm text-center border border-gray-300">
+                    <span class="text-[10px] font-bold text-gray-700 uppercase">Q (Quotation)</span>
+                    <p id="cardQ" class="text-xl font-extrabold text-[#5B3E7D] mt-1">11</p>
+                </div>
+                <div class="bg-[#C8BEC3] p-4 rounded-xl shadow-sm text-center border border-gray-300">
+                    <span class="text-[10px] font-bold text-gray-700 uppercase">NC (New Contact)</span>
+                    <p id="cardNC" class="text-xl font-extrabold text-[#5B3E7D] mt-1">15</p>
+                </div>
+                <div class="bg-[#C8BEC3] p-4 rounded-xl shadow-sm text-center border border-gray-300">
+                    <span class="text-[10px] font-bold text-gray-700 uppercase">BOP (Recruits)</span>
+                    <p id="cardBOP" class="text-xl font-extrabold text-blue-900 mt-1">3</p>
+                </div>
+                <div class="bg-[#C8BEC3] p-4 rounded-xl shadow-sm text-center border border-gray-300">
+                    <span class="text-[10px] font-bold text-gray-700 uppercase">MTD (TPC)</span>
+                    <p id="cardMTD" class="text-xl font-extrabold text-emerald-800 mt-1">7,000</p>
+                </div>
+                <div class="bg-[#C8BEC3] p-4 rounded-xl shadow-sm text-center border border-gray-300 col-span-2">
+                    <span class="text-[10px] font-bold text-gray-700 uppercase">YTD (TPC)</span>
+                    <p id="cardYTD" class="text-xl font-extrabold text-[#5B3E7D] mt-1">120,552</p>
+                </div>
+            </div>
+
+            <!-- Leaderboard Table (Ejen Sahaja) -->
+            <div class="bg-white rounded-2xl border border-gray-300 shadow-md overflow-hidden">
+                <div class="p-5 border-b border-gray-200 flex justify-between items-center bg-gray-50">
+                    <h3 class="text-lg font-bold text-[#5B3E7D] flex items-center gap-2">
+                        🏆 Leaderboard & Metrik Ejen
+                    </h3>
+                    <span class="text-xs text-gray-500 font-medium">Papan Pemuka Agensi</span>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left text-xs text-gray-700">
+                        <thead class="bg-gray-100 uppercase text-[11px] text-gray-600 border-b border-gray-300">
+                            <tr>
+                                <th class="py-3 px-3">Kedudukan</th>
+                                <th class="py-3 px-3">Nama Ejen</th>
+                                <th class="py-3 px-3 text-center">P</th>
+                                <th class="py-3 px-3 text-center">C</th>
+                                <th class="py-3 px-3 text-center">Q</th>
+                                <th class="py-3 px-3 text-center">NC</th>
+                                <th class="py-3 px-3 text-center">BOP</th>
+                                <th class="py-3 px-3 text-right">MTD (TPC)</th>
+                                <th class="py-3 px-3 text-right">YTD (TPC)</th>
+                            </tr>
+                        </thead>
+                        <tbody id="leaderboardBody" class="divide-y divide-gray-200">
+                            <!-- Dijana oleh JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Bahagian Kanan: Borang Kemaskini Prestasi Ejen -->
+        <div class="space-y-6">
+            <div class="bg-[#C8BEC3] border border-gray-300 p-6 rounded-2xl shadow-md">
+                <h3 class="text-lg font-bold text-gray-900 mb-1">Kemaskini Metrik Anda</h3>
+                <p class="text-xs text-gray-700 mb-5 font-medium">Kunci masuk nilai metrik agensi anda untuk skrin pembentangan.</p>
+                
+                <form onsubmit="handleMetricUpdate(event)" class="space-y-3">
+                    <div class="grid grid-cols-2 gap-3">
+                        <div>
+                            <label class="block text-[11px] font-bold uppercase text-gray-800 mb-1">P (Presentation):</label>
+                            <input type="number" id="inputP" value="5" class="w-full px-3 py-2 rounded-xl bg-white border border-gray-300 text-gray-900 text-sm font-bold shadow-inner">
+                        </div>
+                        <div>
+                            <label class="block text-[11px] font-bold uppercase text-gray-800 mb-1">C (Close Case):</label>
+                            <input type="number" id="inputC" value="2" class="w-full px-3 py-2 rounded-xl bg-white border border-gray-300 text-gray-900 text-sm font-bold shadow-inner">
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-2 gap-3">
+                        <div>
+                            <label class="block text-[11px] font-bold uppercase text-gray-800 mb-1">Q (Quotation):</label>
+                            <input type="number" id="inputQ" value="11" class="w-full px-3 py-2 rounded-xl bg-white border border-gray-300 text-gray-900 text-sm font-bold shadow-inner">
+                        </div>
+                        <div>
+                            <label class="block text-[11px] font-bold uppercase text-gray-800 mb-1">NC (New Contact):</label>
+                            <input type="number" id="inputNC" value="15" class="w-full px-3 py-2 rounded-xl bg-white border border-gray-300 text-gray-900 text-sm font-bold shadow-inner">
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-2 gap-3">
+                        <div>
+                            <label class="block text-[11px] font-bold uppercase text-gray-800 mb-1">BOP (Recruits):</label>
+                            <input type="number" id="inputBOP" value="3" class="w-full px-3 py-2 rounded-xl bg-white border border-gray-300 text-gray-900 text-sm font-bold shadow-inner">
+                        </div>
+                        <div>
+                            <label class="block text-[11px] font-bold uppercase text-gray-800 mb-1">MTD (TPC):</label>
+                            <input type="number" id="inputMTD" value="7000" class="w-full px-3 py-2 rounded-xl bg-white border border-gray-300 text-gray-900 text-sm font-bold shadow-inner">
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-[11px] font-bold uppercase text-gray-800 mb-1">YTD (TPC):</label>
+                        <input type="number" id="inputYTD" value="120552" class="w-full px-3 py-2 rounded-xl bg-white border border-gray-300 text-gray-900 text-sm font-bold shadow-inner">
+                    </div>
+                    <div class="grid grid-cols-2 gap-3 pt-2">
+                        <div>
+                            <label class="block text-[10px] font-bold uppercase text-gray-700 mb-1">Total TPC:</label>
+                            <input type="number" id="inputTotalTPC" value="120552" class="w-full px-3 py-2 rounded-xl bg-white border border-gray-300 text-gray-800 text-xs shadow-inner">
+                        </div>
+                        <div>
+                            <label class="block text-[10px] font-bold uppercase text-gray-700 mb-1">Total Cases:</label>
+                            <input type="number" id="inputTotalCases" value="18" class="w-full px-3 py-2 rounded-xl bg-white border border-gray-300 text-gray-800 text-xs shadow-inner">
+                        </div>
+                    </div>
+                    <button 
+                        type="submit" 
+                        class="w-full bg-[#5B3E7D] hover:bg-[#4A3168] text-white font-bold py-3 px-4 rounded-xl transition duration-200 shadow-md mt-3"
+                    >
+                        Simpan & Kemaskini
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Pop-Up Edit Profil Ejen -->
+    <div id="profileModal" class="fixed inset-0 bg-black/60 backdrop-blur-sm hidden flex items-center justify-center p-4 z-50">
+        <div class="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl relative text-center border border-gray-200">
+            <button onclick="closeProfileModal()" class="absolute top-4 right-4 text-gray-400 hover:text-gray-700 text-2xl font-bold">
+                &times;
+            </button>
+
+            <h3 class="text-xl font-extrabold text-[#5B3E7D] mb-1">Profil Ejen</h3>
+            <p class="text-xs text-gray-500 mb-6">Kemaskini maklumat profil anda</p>
+
+            <form onsubmit="handleProfileUpdate(event)" class="space-y-4 text-left">
+                <div class="flex flex-col items-center mb-4">
+                    <img id="modalProfilePic" src="https://ui-avatars.com/api/?name=NOOR+HANIS+HASSAN&background=5B3E7D&color=fff" alt="Large Profile Pic" class="w-28 h-28 rounded-full object-cover border-4 border-[#5B3E7D] shadow-md mb-2">
+                    <span class="text-xs font-bold text-[#5B3E7D] bg-purple-100 px-3 py-1 rounded-full">Code: HHC00025</span>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold uppercase text-gray-700 mb-1">Nama Penuh Ejen:</label>
+                    <input type="text" id="inputAgentName" value="NOOR HANIS BINTI HASSAN" required class="w-full px-4 py-2.5 rounded-xl bg-gray-50 border border-gray-300 text-gray-900 text-sm font-bold focus:outline-none focus:ring-2 focus:ring-purple-600">
+                </div>
+
+                <div class="pt-3 flex gap-3">
+                    <button type="button" onclick="closeProfileModal()" class="w-1/2 bg-gray-200 hover:bg-gray-300 text-gray-800 text-xs font-bold py-3 rounded-xl transition">
+                        Batal
+                    </button>
+                    <button type="submit" class="w-1/2 bg-[#5B3E7D] hover:bg-[#4A3168] text-white text-xs font-bold py-3 rounded-xl transition shadow-md">
+                        Simpan Profil
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        const defaultAgents = [
+            {
+                code: "HHC00025",
+                name: "NOOR HANIS BINTI HASSAN",
+                p: 5, c: 2, q: 11, nc: 15, bop: 3,
+                mtd: 7000, ytd: 120552, totalTpc: 120552, totalCases: 18,
+                isCurrentUser: true
+            },
+            {
+                code: "RSC00038",
+                name: "DURRATUL INSYIRAH BINTI MOHAMAD ARIFF",
+                p: 3, c: 0, q: 4, nc: 47, bop: 0,
+                mtd: 0, ytd: 48500, totalTpc: 48500, totalCases: 9,
+                isCurrentUser: false
+            },
+            {
+                code: "RSC00031",
+                name: "AISHAH MAZLAN",
+                p: 4, c: 1, q: 7, nc: 22, bop: 1,
+                mtd: 4500, ytd: 89200, totalTpc: 89200, totalCases: 14,
+                isCurrentUser: false
+            }
+        ];
+
+        function getAgentsData() {
+            const saved = localStorage.getItem('saft_demo_agents');
+            return saved ? JSON.parse(saved) : JSON.parse(JSON.stringify(defaultAgents));
+        }
+
+        function saveAgentsData(data) {
+            localStorage.setItem('saft_demo_agents', JSON.stringify(data));
+        }
+
+        function formatNum(num) {
+            return Number(num).toLocaleString('en-US');
+        }
+
+        function showToast(msg) {
+            const banner = document.getElementById('toastBanner');
+            const text = document.getElementById('toastMessage');
+            text.textContent = msg;
+            banner.classList.remove('hidden');
+            setTimeout(() => banner.classList.add('hidden'), 3500);
+        }
+
+        function renderDashboard() {
+            const agents = getAgentsData();
+            const me = agents.find(a => a.isCurrentUser);
+
+            if (me) {
+                const avatarUrl = `https://ui-avatars.com/api/?name=${encodeURIComponent(me.name)}&background=5B3E7D&color=fff`;
+                document.getElementById('navAgentName').textContent = me.name;
+                document.getElementById('navProfilePic').src = avatarUrl;
+                document.getElementById('modalProfilePic').src = avatarUrl;
+                document.getElementById('inputAgentName').value = me.name;
+
+                document.getElementById('cardP').textContent = formatNum(me.p);
+                document.getElementById('cardC').textContent = formatNum(me.c);
+                document.getElementById('cardQ').textContent = formatNum(me.q);
+                document.getElementById('cardNC').textContent = formatNum(me.nc);
+                document.getElementById('cardBOP').textContent = formatNum(me.bop);
+                document.getElementById('cardMTD').textContent = formatNum(me.mtd);
+                document.getElementById('cardYTD').textContent = formatNum(me.ytd);
+
+                document.getElementById('inputP').value = me.p;
+                document.getElementById('inputC').value = me.c;
+                document.getElementById('inputQ').value = me.q;
+                document.getElementById('inputNC').value = me.nc;
+                document.getElementById('inputBOP').value = me.bop;
+                document.getElementById('inputMTD').value = me.mtd;
+                document.getElementById('inputYTD').value = me.ytd;
+                document.getElementById('inputTotalTPC').value = me.totalTpc;
+                document.getElementById('inputTotalCases').value = me.totalCases;
+            }
+
+            // Susun Leaderboard mengikut YTD tertinggi
+            const sorted = [...agents].sort((a, b) => b.ytd - a.ytd);
+            const tbody = document.getElementById('leaderboardBody');
+            tbody.innerHTML = '';
+
+            sorted.forEach((agent, idx) => {
+                const rank = idx + 1;
+                let rankBadge = `#${rank}`;
+                if (rank === 1) rankBadge = "🥇 #1";
+                else if (rank === 2) rankBadge = "🥈 #2";
+                else if (rank === 3) rankBadge = "🥉 #3";
+
+                const pic = `https://ui-avatars.com/api/?name=${encodeURIComponent(agent.name)}&background=5B3E7D&color=fff`;
+                const rowClass = agent.isCurrentUser ? 'bg-purple-50 font-semibold border-l-4 border-[#5B3E7D]' : 'hover:bg-gray-50';
+
+                tbody.innerHTML += `
+                    <tr class="${rowClass} transition">
+                        <td class="py-3 px-3 font-bold text-gray-900">${rankBadge}</td>
+                        <td class="py-3 px-3 flex items-center gap-2">
+                            <img src="${pic}" alt="Agent Pic" class="w-8 h-8 rounded-full object-cover border border-purple-400 shadow-sm">
+                            <div>
+                                <p class="font-bold text-gray-900">${agent.name}</p>
+                                <span class="text-[10px] text-gray-500 font-normal">${agent.code}</span>
+                            </div>
+                        </td>
+                        <td class="py-3 px-3 text-center font-bold text-[#5B3E7D]">${formatNum(agent.p)}</td>
+                        <td class="py-3 px-3 text-center font-medium">${formatNum(agent.c)}</td>
+                        <td class="py-3 px-3 text-center font-medium">${formatNum(agent.q)}</td>
+                        <td class="py-3 px-3 text-center font-bold text-emerald-700">${formatNum(agent.nc)}</td>
+                        <td class="py-3 px-3 text-center text-blue-800 font-bold">${formatNum(agent.bop)}</td>
+                        <td class="py-3 px-3 text-right text-emerald-700 font-bold">${formatNum(agent.mtd)}</td>
+                        <td class="py-3 px-3 text-right font-extrabold text-[#5B3E7D]">${formatNum(agent.ytd)}</td>
+                    </tr>
+                `;
+            });
+        }
+
+        function handleMetricUpdate(e) {
+            e.preventDefault();
+            const agents = getAgentsData();
+            const me = agents.find(a => a.isCurrentUser);
+            if (me) {
+                me.p = parseInt(document.getElementById('inputP').value) || 0;
+                me.c = parseInt(document.getElementById('inputC').value) || 0;
+                me.q = parseInt(document.getElementById('inputQ').value) || 0;
+                me.nc = parseInt(document.getElementById('inputNC').value) || 0;
+                me.bop = parseInt(document.getElementById('inputBOP').value) || 0;
+                me.mtd = parseInt(document.getElementById('inputMTD').value) || 0;
+                me.ytd = parseInt(document.getElementById('inputYTD').value) || 0;
+                me.totalTpc = parseInt(document.getElementById('inputTotalTPC').value) || 0;
+                me.totalCases = parseInt(document.getElementById('inputTotalCases').value) || 0;
+                saveAgentsData(agents);
+                renderDashboard();
+                showToast("Prestasi & Metrik Agensi berjaya dikemaskini!");
+            }
+        }
+
+        function handleProfileUpdate(e) {
+            e.preventDefault();
+            const agents = getAgentsData();
+            const me = agents.find(a => a.isCurrentUser);
+            if (me) {
+                me.name = document.getElementById('inputAgentName').value.trim();
+                saveAgentsData(agents);
+                renderDashboard();
+                closeProfileModal();
+                showToast("Profil berjaya dikemaskini!");
+            }
+        }
+
+        function resetDemoData() {
+            localStorage.removeItem('saft_demo_agents');
+            renderDashboard();
+            showToast("Data demo telah ditetapkan semula.");
+        }
+
+        function openProfileModal() {
+            document.getElementById('profileModal').classList.remove('hidden');
+        }
+        function closeProfileModal() {
+            document.getElementById('profileModal').classList.add('hidden');
+        }
+
+        // Papar bulan semasa secara automatik
+        const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+        const now = new Date();
+        document.getElementById('currentMonthLabel').textContent = `${monthNames[now.getMonth()]} ${now.getFullYear()}`;
+
+        renderDashboard();
+    </script>
+</body>
+</html>
