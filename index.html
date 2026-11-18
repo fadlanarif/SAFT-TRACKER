@@ -1,180 +1,254 @@
 <!DOCTYPE html>
-<html lang="ms">
+<html lang="ms" class="light">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard - SAFT Advisory Performance Tracker (Live Demo)</title>
+    <title>SAFT Tracker - Agent Performance & Progress Dashboard</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+        }
+    </script>
+    <style>
+        /* Frosted Glass Effect */
+        .glass-light {
+            background: rgba(255, 255, 255, 0.72);
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+            border: 1px solid rgba(255, 255, 255, 0.6);
+        }
+        .dark .glass-light {
+            background: rgba(24, 24, 27, 0.72);
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.55);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+        }
+        .dark .glass-card {
+            background: rgba(39, 39, 42, 0.55);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+    </style>
 </head>
-<body class="bg-gray-100 text-gray-800 min-h-screen">
+<body class="min-h-screen bg-gradient-to-br from-slate-200 via-zinc-100 to-purple-100 dark:from-zinc-950 dark:via-neutral-900 dark:to-purple-950/40 text-gray-900 dark:text-zinc-100 transition-colors duration-300">
 
     <!-- Banner Mod Demo Portfolio -->
-    <div class="bg-gray-900 text-purple-200 text-[11px] py-1.5 px-4 text-center font-medium">
-        🔍 <span class="font-bold text-white">INTERACTIVE PORTFOLIO DEMO:</span> Paparan terus Agent Dashboard SAFT Tracker (Data disimpan sementara dalam pelayar).
+    <div class="bg-zinc-950 text-zinc-300 text-[11px] py-1.5 px-4 text-center font-medium border-b border-white/10">
+        🔍 <span class="font-bold text-white">INTERACTIVE PORTFOLIO DEMO:</span> Frosted Glass UI &bull; Dark/Light Mode &bull; Real-Time Metrics
     </div>
 
-    <!-- Navigation bahagian atas -->
-    <nav class="bg-white border-b border-gray-300 px-6 py-4 flex flex-wrap justify-between items-center shadow-sm">
+    <!-- Navigation Bahagian Atas (Frosted Glass) -->
+    <nav class="sticky top-0 z-40 glass-light px-6 py-3.5 flex flex-wrap justify-between items-center shadow-sm">
         <div class="flex items-center space-x-3">
-            <span class="bg-[#5B3E7D] text-white px-3 py-1 rounded-lg text-xs font-bold uppercase tracking-wider">SAFT Tracker</span>
-            <h1 class="text-xl font-bold tracking-wide text-gray-900">by SAFt KT IGNITE</h1>
+            <img src="logo.png" onerror="this.style.display='none'" alt="SAFT Logo" class="h-9 w-auto object-contain rounded-lg">
+            <div>
+                <div class="flex items-center gap-2">
+                    <span class="bg-zinc-900 dark:bg-white text-white dark:text-zinc-900 px-2.5 py-0.5 rounded-md text-[11px] font-extrabold uppercase tracking-wider">SAFT Tracker</span>
+                    <span class="text-xs font-bold text-gray-600 dark:text-zinc-400">by SAFt KT IGNITE</span>
+                </div>
+            </div>
         </div>
-        <div class="flex items-center space-x-4 mt-2 sm:mt-0">
+
+        <div class="flex items-center space-x-3 mt-2 sm:mt-0">
+            <!-- Toggle Dark / Light Mode -->
+            <button onclick="toggleTheme()" id="themeToggleBtn" class="p-2 rounded-xl glass-card hover:scale-105 transition text-xs font-bold flex items-center gap-1.5 shadow-sm" title="Tukar Tema">
+                <span id="themeIcon">🌙</span>
+                <span id="themeText" class="hidden sm:inline">Dark</span>
+            </button>
+
             <!-- Profil Ejen (Boleh Ditekan) -->
-            <button onclick="openProfileModal()" class="flex items-center space-x-3 hover:bg-purple-50 p-1.5 rounded-xl transition duration-150 border border-transparent hover:border-purple-200">
-                <img id="navProfilePic" src="https://ui-avatars.com/api/?name=NOOR+HANIS+HASSAN&background=5B3E7D&color=fff" alt="Profile Picture" class="w-10 h-10 rounded-full object-cover border-2 border-[#5B3E7D] shadow-sm">
+            <button onclick="openProfileModal()" class="flex items-center space-x-2.5 glass-card hover:bg-white/80 dark:hover:bg-zinc-800/80 px-3 py-1.5 rounded-2xl transition duration-150 shadow-sm">
+                <img id="navProfilePic" src="uploads/1791168186_HHC00025.png" alt="NH" class="w-9 h-9 rounded-full object-cover border-2 border-zinc-800 dark:border-white shadow-sm">
                 <div class="text-right">
-                    <p id="navAgentName" class="text-sm font-bold text-gray-800 leading-tight">NOOR HANIS BINTI HASSAN</p>
-                    <p class="text-xs text-[#5B3E7D] font-bold">Code: HHC00025</p>
+                    <p id="navAgentName" class="text-xs font-extrabold leading-tight">NOOR HANIS BINTI HASSAN</p>
+                    <p class="text-[11px] text-purple-700 dark:text-purple-300 font-bold">Code: HHC00025</p>
                 </div>
             </button>
 
-            <button onclick="resetDemoData()" class="bg-gray-200 hover:bg-gray-300 text-gray-800 text-xs font-bold px-3 py-2 rounded-xl transition shadow-sm" title="Set semula data demo asal">
-                Reset Demo
+            <button onclick="resetDemoData()" class="bg-zinc-800 hover:bg-zinc-700 dark:bg-zinc-700 dark:hover:bg-zinc-600 text-white text-xs font-bold px-3 py-2 rounded-xl transition shadow-sm">
+                Reset
             </button>
         </div>
     </nav>
 
     <!-- Notifikasi Berjaya -->
     <div id="toastBanner" class="hidden max-w-7xl mx-auto px-4 mt-4">
-        <div id="toastMessage" class="p-3 bg-green-100 border border-green-400 text-green-800 text-xs font-bold rounded-xl text-center"></div>
+        <div id="toastMessage" class="p-3 glass-light border-l-4 border-emerald-500 text-emerald-800 dark:text-emerald-300 text-xs font-bold rounded-xl text-center shadow-md"></div>
     </div>
 
     <!-- Kandungan Utama -->
     <div class="max-w-7xl mx-auto px-4 py-8 grid grid-cols-1 lg:grid-cols-3 gap-8">
         
-        <!-- Bahagian Kiri (2 Kolum): Leaderboard & Metrik Pembentangan -->
+        <!-- Bahagian Kiri (2 Kolum): My Progress, Leaderboard & Activity Log -->
         <div class="lg:col-span-2 space-y-6">
             
-            <!-- Kad Header Pembentangan -->
-            <div class="bg-[#5B3E7D] text-white p-6 rounded-2xl shadow-md flex justify-between items-center">
+            <!-- Kad Header Pembentangan (Frosted Dark Accent) -->
+            <div class="bg-zinc-900/90 dark:bg-white/10 backdrop-blur-md text-white p-6 rounded-3xl shadow-lg border border-white/15 flex justify-between items-center">
                 <div>
-                    <h2 class="text-2xl font-extrabold">My Progress</h2>
-                    <p class="text-xs text-purple-200 mt-1">Sesi Pembentangan Prestasi Bulan: <span class="font-bold underline" id="currentMonthLabel">November 2026</span></p>
+                    <h2 class="text-2xl font-extrabold tracking-tight">My Progress</h2>
+                    <p class="text-xs text-zinc-300 mt-1">Sesi Pembentangan Prestasi Bulan: <span class="font-bold underline text-white" id="currentMonthLabel">November 2026</span></p>
                 </div>
                 <div class="text-right">
-                    <span class="text-xs text-purple-200 uppercase block font-semibold">Status :</span>
-                    <span class="bg-white/20 text-white border border-white/40 text-xs px-3 py-1 rounded-full font-bold">LIVE UPDATE</span>
+                    <span class="text-[10px] text-zinc-400 uppercase block font-semibold tracking-wider">Status</span>
+                    <span class="inline-flex items-center gap-1.5 bg-emerald-500/20 text-emerald-300 border border-emerald-400/30 text-xs px-3 py-1 rounded-full font-bold mt-1">
+                        <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span> LIVE UPDATE
+                    </span>
                 </div>
             </div>
 
-            <!-- Kad Ringkasan Metrik Ejen Semasa -->
-            <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
-                <div class="bg-[#C8BEC3] p-4 rounded-xl shadow-sm text-center border border-gray-300">
-                    <span class="text-[10px] font-bold text-gray-700 uppercase">P (Presentation)</span>
-                    <p id="cardP" class="text-xl font-extrabold text-[#5B3E7D] mt-1">5</p>
+            <!-- Kad Ringkasan Metrik Ejen Semasa (Frosted Glass Cards) -->
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-3.5">
+                <div class="glass-light p-4 rounded-2xl shadow-sm text-center hover:-translate-y-0.5 transition">
+                    <span class="text-[10px] font-bold text-gray-500 dark:text-zinc-400 uppercase tracking-wider">P (Presentation)</span>
+                    <p id="cardP" class="text-2xl font-black text-zinc-900 dark:text-white mt-1">5</p>
                 </div>
-                <div class="bg-[#C8BEC3] p-4 rounded-xl shadow-sm text-center border border-gray-300">
-                    <span class="text-[10px] font-bold text-gray-700 uppercase">C (Close Case)</span>
-                    <p id="cardC" class="text-xl font-extrabold text-[#5B3E7D] mt-1">2</p>
+                <div class="glass-light p-4 rounded-2xl shadow-sm text-center hover:-translate-y-0.5 transition">
+                    <span class="text-[10px] font-bold text-gray-500 dark:text-zinc-400 uppercase tracking-wider">C (Close Case)</span>
+                    <p id="cardC" class="text-2xl font-black text-zinc-900 dark:text-white mt-1">2</p>
                 </div>
-                <div class="bg-[#C8BEC3] p-4 rounded-xl shadow-sm text-center border border-gray-300">
-                    <span class="text-[10px] font-bold text-gray-700 uppercase">Q (Quotation)</span>
-                    <p id="cardQ" class="text-xl font-extrabold text-[#5B3E7D] mt-1">11</p>
+                <div class="glass-light p-4 rounded-2xl shadow-sm text-center hover:-translate-y-0.5 transition">
+                    <span class="text-[10px] font-bold text-gray-500 dark:text-zinc-400 uppercase tracking-wider">Q (Quotation)</span>
+                    <p id="cardQ" class="text-2xl font-black text-zinc-900 dark:text-white mt-1">11</p>
                 </div>
-                <div class="bg-[#C8BEC3] p-4 rounded-xl shadow-sm text-center border border-gray-300">
-                    <span class="text-[10px] font-bold text-gray-700 uppercase">NC (New Contact)</span>
-                    <p id="cardNC" class="text-xl font-extrabold text-[#5B3E7D] mt-1">15</p>
+                <div class="glass-light p-4 rounded-2xl shadow-sm text-center hover:-translate-y-0.5 transition">
+                    <span class="text-[10px] font-bold text-gray-500 dark:text-zinc-400 uppercase tracking-wider">NC (New Contact)</span>
+                    <p id="cardNC" class="text-2xl font-black text-zinc-900 dark:text-white mt-1">15</p>
                 </div>
-                <div class="bg-[#C8BEC3] p-4 rounded-xl shadow-sm text-center border border-gray-300">
-                    <span class="text-[10px] font-bold text-gray-700 uppercase">BOP (Recruits)</span>
-                    <p id="cardBOP" class="text-xl font-extrabold text-blue-900 mt-1">3</p>
+                <div class="glass-light p-4 rounded-2xl shadow-sm text-center hover:-translate-y-0.5 transition">
+                    <span class="text-[10px] font-bold text-gray-500 dark:text-zinc-400 uppercase tracking-wider">BOP (Recruits)</span>
+                    <p id="cardBOP" class="text-2xl font-black text-blue-600 dark:text-blue-400 mt-1">3</p>
                 </div>
-                <div class="bg-[#C8BEC3] p-4 rounded-xl shadow-sm text-center border border-gray-300">
-                    <span class="text-[10px] font-bold text-gray-700 uppercase">MTD (TPC)</span>
-                    <p id="cardMTD" class="text-xl font-extrabold text-emerald-800 mt-1">7,000</p>
+                <div class="glass-light p-4 rounded-2xl shadow-sm text-center hover:-translate-y-0.5 transition">
+                    <span class="text-[10px] font-bold text-gray-500 dark:text-zinc-400 uppercase tracking-wider">MTD (TPC)</span>
+                    <p id="cardMTD" class="text-2xl font-black text-emerald-600 dark:text-emerald-400 mt-1">7,000</p>
                 </div>
-                <div class="bg-[#C8BEC3] p-4 rounded-xl shadow-sm text-center border border-gray-300 col-span-2">
-                    <span class="text-[10px] font-bold text-gray-700 uppercase">YTD (TPC)</span>
-                    <p id="cardYTD" class="text-xl font-extrabold text-[#5B3E7D] mt-1">120,552</p>
+                <div class="glass-light p-4 rounded-2xl shadow-sm text-center col-span-2 hover:-translate-y-0.5 transition">
+                    <span class="text-[10px] font-bold text-gray-500 dark:text-zinc-400 uppercase tracking-wider">YTD (TPC)</span>
+                    <p id="cardYTD" class="text-2xl font-black text-purple-700 dark:text-purple-400 mt-1">120,552</p>
                 </div>
             </div>
 
-            <!-- Leaderboard Table (Ejen Sahaja) -->
-            <div class="bg-white rounded-2xl border border-gray-300 shadow-md overflow-hidden">
-                <div class="p-5 border-b border-gray-200 flex justify-between items-center bg-gray-50">
-                    <h3 class="text-lg font-bold text-[#5B3E7D] flex items-center gap-2">
+            <!-- Leaderboard Table (Frosted Glass) -->
+            <div class="glass-light rounded-3xl shadow-md overflow-hidden">
+                <div class="p-5 border-b border-gray-200/60 dark:border-white/10 flex justify-between items-center">
+                    <h3 class="text-base font-extrabold flex items-center gap-2">
                         🏆 Leaderboard & Metrik Ejen
                     </h3>
-                    <span class="text-xs text-gray-500 font-medium">Papan Pemuka Agensi</span>
+                    <span class="text-xs text-gray-500 dark:text-zinc-400 font-medium">Papan Pemuka Agensi</span>
                 </div>
                 <div class="overflow-x-auto">
-                    <table class="w-full text-left text-xs text-gray-700">
-                        <thead class="bg-gray-100 uppercase text-[11px] text-gray-600 border-b border-gray-300">
+                    <table class="w-full text-left text-xs">
+                        <thead class="bg-white/40 dark:bg-white/5 uppercase text-[10px] text-gray-600 dark:text-zinc-400 border-b border-gray-200/60 dark:border-white/10">
                             <tr>
-                                <th class="py-3 px-3">Kedudukan</th>
-                                <th class="py-3 px-3">Nama Ejen</th>
-                                <th class="py-3 px-3 text-center">P</th>
-                                <th class="py-3 px-3 text-center">C</th>
-                                <th class="py-3 px-3 text-center">Q</th>
-                                <th class="py-3 px-3 text-center">NC</th>
-                                <th class="py-3 px-3 text-center">BOP</th>
-                                <th class="py-3 px-3 text-right">MTD (TPC)</th>
-                                <th class="py-3 px-3 text-right">YTD (TPC)</th>
+                                <th class="py-3.5 px-3">Kedudukan</th>
+                                <th class="py-3.5 px-3">Nama Ejen</th>
+                                <th class="py-3.5 px-3 text-center">P</th>
+                                <th class="py-3.5 px-3 text-center">C</th>
+                                <th class="py-3.5 px-3 text-center">Q</th>
+                                <th class="py-3.5 px-3 text-center">NC</th>
+                                <th class="py-3.5 px-3 text-center">BOP</th>
+                                <th class="py-3.5 px-3 text-right">MTD (TPC)</th>
+                                <th class="py-3.5 px-3 text-right">YTD (TPC)</th>
                             </tr>
                         </thead>
-                        <tbody id="leaderboardBody" class="divide-y divide-gray-200">
+                        <tbody id="leaderboardBody" class="divide-y divide-gray-200/50 dark:divide-white/10">
                             <!-- Dijana oleh JavaScript -->
                         </tbody>
                     </table>
                 </div>
             </div>
+
+            <!-- Aktiviti Lapangan Ejen (Frosted Glass Gallery) -->
+            <div class="glass-light rounded-3xl p-6 shadow-md">
+                <div class="flex justify-between items-center mb-4">
+                    <div>
+                        <h3 class="text-base font-extrabold">📸 Log Aktiviti Lapangan</h3>
+                        <p class="text-xs text-gray-500 dark:text-zinc-400">Bukti bergambar aktiviti booth, taklimat & temujanji pelanggan</p>
+                    </div>
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div class="glass-card rounded-2xl overflow-hidden shadow-sm">
+                        <img src="uploads/activities/1794709080_HHC00025.png" onerror="this.src='https://placehold.co/600x350/27272a/ffffff?text=Booth+Promosi+SAFT'" alt="Aktiviti Booth" class="w-full h-36 object-cover">
+                        <div class="p-3">
+                            <span class="text-[10px] font-bold uppercase px-2 py-0.5 rounded bg-purple-100 dark:bg-purple-900/50 text-purple-800 dark:text-purple-200">Booth Promosi</span>
+                            <p class="text-xs font-bold mt-1.5">Sesi Konsultasi & Booth Kesedaran Takaful</p>
+                            <p class="text-[11px] text-gray-500 dark:text-zinc-400 mt-0.5">Oleh: NOOR HANIS (HHC00025)</p>
+                        </div>
+                    </div>
+                    <div class="glass-card rounded-2xl overflow-hidden shadow-sm">
+                        <img src="uploads/activities/1793523307_RSC00031.jpeg" onerror="this.src='https://placehold.co/600x350/27272a/ffffff?text=Client+Appointment'" alt="Aktiviti Client" class="w-full h-36 object-cover">
+                        <div class="p-3">
+                            <span class="text-[10px] font-bold uppercase px-2 py-0.5 rounded bg-emerald-100 dark:bg-emerald-900/50 text-emerald-800 dark:text-emerald-200">Temujanji</span>
+                            <p class="text-xs font-bold mt-1.5">Pembentangan Pelan Hibah & Kad Perubatan</p>
+                            <p class="text-[11px] text-gray-500 dark:text-zinc-400 mt-0.5">Oleh: AISHAH MAZLAN (RSC00031)</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
 
-        <!-- Bahagian Kanan: Borang Kemaskini Prestasi Ejen -->
+        <!-- Bahagian Kanan: Borang Kemaskini Prestasi Ejen (Frosted Glass) -->
         <div class="space-y-6">
-            <div class="bg-[#C8BEC3] border border-gray-300 p-6 rounded-2xl shadow-md">
-                <h3 class="text-lg font-bold text-gray-900 mb-1">Kemaskini Metrik Anda</h3>
-                <p class="text-xs text-gray-700 mb-5 font-medium">Kunci masuk nilai metrik agensi anda untuk skrin pembentangan.</p>
+            <div class="glass-light p-6 rounded-3xl shadow-md sticky top-24">
+                <h3 class="text-lg font-extrabold mb-1">Kemaskini Metrik Anda</h3>
+                <p class="text-xs text-gray-600 dark:text-zinc-400 mb-5 font-medium">Kunci masuk nilai metrik agensi anda untuk skrin pembentangan.</p>
                 
                 <form onsubmit="handleMetricUpdate(event)" class="space-y-3">
                     <div class="grid grid-cols-2 gap-3">
                         <div>
-                            <label class="block text-[11px] font-bold uppercase text-gray-800 mb-1">P (Presentation):</label>
-                            <input type="number" id="inputP" value="5" class="w-full px-3 py-2 rounded-xl bg-white border border-gray-300 text-gray-900 text-sm font-bold shadow-inner">
+                            <label class="block text-[11px] font-bold uppercase text-gray-700 dark:text-zinc-300 mb-1">P (Presentation):</label>
+                            <input type="number" id="inputP" value="5" class="w-full px-3 py-2 rounded-xl bg-white/80 dark:bg-zinc-900/80 border border-gray-300/80 dark:border-white/15 text-sm font-bold focus:outline-none focus:ring-2 focus:ring-purple-500">
                         </div>
                         <div>
-                            <label class="block text-[11px] font-bold uppercase text-gray-800 mb-1">C (Close Case):</label>
-                            <input type="number" id="inputC" value="2" class="w-full px-3 py-2 rounded-xl bg-white border border-gray-300 text-gray-900 text-sm font-bold shadow-inner">
-                        </div>
-                    </div>
-                    <div class="grid grid-cols-2 gap-3">
-                        <div>
-                            <label class="block text-[11px] font-bold uppercase text-gray-800 mb-1">Q (Quotation):</label>
-                            <input type="number" id="inputQ" value="11" class="w-full px-3 py-2 rounded-xl bg-white border border-gray-300 text-gray-900 text-sm font-bold shadow-inner">
-                        </div>
-                        <div>
-                            <label class="block text-[11px] font-bold uppercase text-gray-800 mb-1">NC (New Contact):</label>
-                            <input type="number" id="inputNC" value="15" class="w-full px-3 py-2 rounded-xl bg-white border border-gray-300 text-gray-900 text-sm font-bold shadow-inner">
+                            <label class="block text-[11px] font-bold uppercase text-gray-700 dark:text-zinc-300 mb-1">C (Close Case):</label>
+                            <input type="number" id="inputC" value="2" class="w-full px-3 py-2 rounded-xl bg-white/80 dark:bg-zinc-900/80 border border-gray-300/80 dark:border-white/15 text-sm font-bold focus:outline-none focus:ring-2 focus:ring-purple-500">
                         </div>
                     </div>
                     <div class="grid grid-cols-2 gap-3">
                         <div>
-                            <label class="block text-[11px] font-bold uppercase text-gray-800 mb-1">BOP (Recruits):</label>
-                            <input type="number" id="inputBOP" value="3" class="w-full px-3 py-2 rounded-xl bg-white border border-gray-300 text-gray-900 text-sm font-bold shadow-inner">
+                            <label class="block text-[11px] font-bold uppercase text-gray-700 dark:text-zinc-300 mb-1">Q (Quotation):</label>
+                            <input type="number" id="inputQ" value="11" class="w-full px-3 py-2 rounded-xl bg-white/80 dark:bg-zinc-900/80 border border-gray-300/80 dark:border-white/15 text-sm font-bold focus:outline-none focus:ring-2 focus:ring-purple-500">
                         </div>
                         <div>
-                            <label class="block text-[11px] font-bold uppercase text-gray-800 mb-1">MTD (TPC):</label>
-                            <input type="number" id="inputMTD" value="7000" class="w-full px-3 py-2 rounded-xl bg-white border border-gray-300 text-gray-900 text-sm font-bold shadow-inner">
+                            <label class="block text-[11px] font-bold uppercase text-gray-700 dark:text-zinc-300 mb-1">NC (New Contact):</label>
+                            <input type="number" id="inputNC" value="15" class="w-full px-3 py-2 rounded-xl bg-white/80 dark:bg-zinc-900/80 border border-gray-300/80 dark:border-white/15 text-sm font-bold focus:outline-none focus:ring-2 focus:ring-purple-500">
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-2 gap-3">
+                        <div>
+                            <label class="block text-[11px] font-bold uppercase text-gray-700 dark:text-zinc-300 mb-1">BOP (Recruits):</label>
+                            <input type="number" id="inputBOP" value="3" class="w-full px-3 py-2 rounded-xl bg-white/80 dark:bg-zinc-900/80 border border-gray-300/80 dark:border-white/15 text-sm font-bold focus:outline-none focus:ring-2 focus:ring-purple-500">
+                        </div>
+                        <div>
+                            <label class="block text-[11px] font-bold uppercase text-gray-700 dark:text-zinc-300 mb-1">MTD (TPC):</label>
+                            <input type="number" id="inputMTD" value="7000" class="w-full px-3 py-2 rounded-xl bg-white/80 dark:bg-zinc-900/80 border border-gray-300/80 dark:border-white/15 text-sm font-bold focus:outline-none focus:ring-2 focus:ring-purple-500">
                         </div>
                     </div>
                     <div>
-                        <label class="block text-[11px] font-bold uppercase text-gray-800 mb-1">YTD (TPC):</label>
-                        <input type="number" id="inputYTD" value="120552" class="w-full px-3 py-2 rounded-xl bg-white border border-gray-300 text-gray-900 text-sm font-bold shadow-inner">
+                        <label class="block text-[11px] font-bold uppercase text-gray-700 dark:text-zinc-300 mb-1">YTD (TPC):</label>
+                        <input type="number" id="inputYTD" value="120552" class="w-full px-3 py-2 rounded-xl bg-white/80 dark:bg-zinc-900/80 border border-gray-300/80 dark:border-white/15 text-sm font-bold focus:outline-none focus:ring-2 focus:ring-purple-500">
                     </div>
                     <div class="grid grid-cols-2 gap-3 pt-2">
                         <div>
-                            <label class="block text-[10px] font-bold uppercase text-gray-700 mb-1">Total TPC:</label>
-                            <input type="number" id="inputTotalTPC" value="120552" class="w-full px-3 py-2 rounded-xl bg-white border border-gray-300 text-gray-800 text-xs shadow-inner">
+                            <label class="block text-[10px] font-bold uppercase text-gray-600 dark:text-zinc-400 mb-1">Total TPC:</label>
+                            <input type="number" id="inputTotalTPC" value="120552" class="w-full px-3 py-2 rounded-xl bg-white/80 dark:bg-zinc-900/80 border border-gray-300/80 dark:border-white/15 text-xs font-bold">
                         </div>
                         <div>
-                            <label class="block text-[10px] font-bold uppercase text-gray-700 mb-1">Total Cases:</label>
-                            <input type="number" id="inputTotalCases" value="18" class="w-full px-3 py-2 rounded-xl bg-white border border-gray-300 text-gray-800 text-xs shadow-inner">
+                            <label class="block text-[10px] font-bold uppercase text-gray-600 dark:text-zinc-400 mb-1">Total Cases:</label>
+                            <input type="number" id="inputTotalCases" value="18" class="w-full px-3 py-2 rounded-xl bg-white/80 dark:bg-zinc-900/80 border border-gray-300/80 dark:border-white/15 text-xs font-bold">
                         </div>
                     </div>
                     <button 
                         type="submit" 
-                        class="w-full bg-[#5B3E7D] hover:bg-[#4A3168] text-white font-bold py-3 px-4 rounded-xl transition duration-200 shadow-md mt-3"
+                        class="w-full bg-zinc-900 hover:bg-zinc-800 dark:bg-white dark:hover:bg-zinc-200 text-white dark:text-zinc-900 font-extrabold py-3 px-4 rounded-xl transition duration-200 shadow-md mt-3"
                     >
                         Simpan & Kemaskini
                     </button>
@@ -183,32 +257,32 @@
         </div>
     </div>
 
-    <!-- Modal Pop-Up Edit Profil Ejen -->
-    <div id="profileModal" class="fixed inset-0 bg-black/60 backdrop-blur-sm hidden flex items-center justify-center p-4 z-50">
-        <div class="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl relative text-center border border-gray-200">
-            <button onclick="closeProfileModal()" class="absolute top-4 right-4 text-gray-400 hover:text-gray-700 text-2xl font-bold">
+    <!-- Modal Pop-Up Edit Profil Ejen (Frosted Glass) -->
+    <div id="profileModal" class="fixed inset-0 bg-black/60 backdrop-blur-md hidden flex items-center justify-center p-4 z-50">
+        <div class="glass-light rounded-3xl max-w-md w-full p-6 shadow-2xl relative text-center">
+            <button onclick="closeProfileModal()" class="absolute top-4 right-4 text-gray-500 hover:text-gray-800 dark:text-zinc-400 dark:hover:text-white text-2xl font-bold">
                 &times;
             </button>
 
-            <h3 class="text-xl font-extrabold text-[#5B3E7D] mb-1">Profil Ejen</h3>
-            <p class="text-xs text-gray-500 mb-6">Kemaskini maklumat profil anda</p>
+            <h3 class="text-xl font-extrabold mb-1">Profil Ejen</h3>
+            <p class="text-xs text-gray-500 dark:text-zinc-400 mb-6">Kemaskini maklumat profil anda</p>
 
             <form onsubmit="handleProfileUpdate(event)" class="space-y-4 text-left">
                 <div class="flex flex-col items-center mb-4">
-                    <img id="modalProfilePic" src="https://ui-avatars.com/api/?name=NOOR+HANIS+HASSAN&background=5B3E7D&color=fff" alt="Large Profile Pic" class="w-28 h-28 rounded-full object-cover border-4 border-[#5B3E7D] shadow-md mb-2">
-                    <span class="text-xs font-bold text-[#5B3E7D] bg-purple-100 px-3 py-1 rounded-full">Code: HHC00025</span>
+                    <img id="modalProfilePic" src="uploads/1791168186_HHC00025.png" alt="NH" class="w-28 h-28 rounded-full object-cover border-4 border-zinc-800 dark:border-white shadow-md mb-2">
+                    <span class="text-xs font-bold bg-zinc-900 text-white dark:bg-white dark:text-zinc-900 px-3 py-1 rounded-full">Code: HHC00025</span>
                 </div>
 
                 <div>
-                    <label class="block text-xs font-bold uppercase text-gray-700 mb-1">Nama Penuh Ejen:</label>
-                    <input type="text" id="inputAgentName" value="NOOR HANIS BINTI HASSAN" required class="w-full px-4 py-2.5 rounded-xl bg-gray-50 border border-gray-300 text-gray-900 text-sm font-bold focus:outline-none focus:ring-2 focus:ring-purple-600">
+                    <label class="block text-xs font-bold uppercase text-gray-700 dark:text-zinc-300 mb-1">Nama Penuh Ejen:</label>
+                    <input type="text" id="inputAgentName" value="NOOR HANIS BINTI HASSAN" required class="w-full px-4 py-2.5 rounded-xl bg-white/80 dark:bg-zinc-900/80 border border-gray-300 dark:border-white/15 text-sm font-bold focus:outline-none focus:ring-2 focus:ring-purple-500">
                 </div>
 
                 <div class="pt-3 flex gap-3">
-                    <button type="button" onclick="closeProfileModal()" class="w-1/2 bg-gray-200 hover:bg-gray-300 text-gray-800 text-xs font-bold py-3 rounded-xl transition">
+                    <button type="button" onclick="closeProfileModal()" class="w-1/2 bg-gray-200/80 hover:bg-gray-300 dark:bg-zinc-800 dark:hover:bg-zinc-700 text-xs font-bold py-3 rounded-xl transition">
                         Batal
                     </button>
-                    <button type="submit" class="w-1/2 bg-[#5B3E7D] hover:bg-[#4A3168] text-white text-xs font-bold py-3 rounded-xl transition shadow-md">
+                    <button type="submit" class="w-1/2 bg-zinc-900 hover:bg-zinc-800 dark:bg-white dark:hover:bg-zinc-200 text-white dark:text-zinc-900 text-xs font-bold py-3 rounded-xl transition shadow-md">
                         Simpan Profil
                     </button>
                 </div>
@@ -217,10 +291,46 @@
     </div>
 
     <script>
+        function toggleTheme() {
+            const html = document.documentElement;
+            const icon = document.getElementById('themeIcon');
+            const text = document.getElementById('themeText');
+            if (html.classList.contains('dark')) {
+                html.classList.remove('dark');
+                icon.textContent = '🌙';
+                text.textContent = 'Dark';
+                localStorage.setItem('saft_theme', 'light');
+            } else {
+                html.classList.add('dark');
+                icon.textContent = '☀️';
+                text.textContent = 'Light';
+                localStorage.setItem('saft_theme', 'dark');
+            }
+        }
+
+        if (localStorage.getItem('saft_theme') === 'dark') {
+            document.documentElement.classList.add('dark');
+            document.getElementById('themeIcon').textContent = '☀️';
+            document.getElementById('themeText').textContent = 'Light';
+        }
+
+        function generateInitialsAvatar(name) {
+            const parts = name.trim().split(' ');
+            const initials = parts.length > 1 
+                ? (parts[0][0] + parts[1][0]).toUpperCase() 
+                : name.substring(0, 2).toUpperCase();
+            const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100">
+                <rect width="100" height="100" fill="#27272a"/>
+                <text x="50" y="54" font-family="Arial, sans-serif" font-size="38" font-weight="bold" fill="#ffffff" text-anchor="middle" dominant-baseline="middle">${initials}</text>
+            </svg>`;
+            return 'data:image/svg+xml;utf8,' + encodeURIComponent(svg);
+        }
+
         const defaultAgents = [
             {
                 code: "HHC00025",
                 name: "NOOR HANIS BINTI HASSAN",
+                pic: "uploads/1791168186_HHC00025.png",
                 p: 5, c: 2, q: 11, nc: 15, bop: 3,
                 mtd: 7000, ytd: 120552, totalTpc: 120552, totalCases: 18,
                 isCurrentUser: true
@@ -228,6 +338,7 @@
             {
                 code: "RSC00038",
                 name: "DURRATUL INSYIRAH BINTI MOHAMAD ARIFF",
+                pic: "",
                 p: 3, c: 0, q: 4, nc: 47, bop: 0,
                 mtd: 0, ytd: 48500, totalTpc: 48500, totalCases: 9,
                 isCurrentUser: false
@@ -235,6 +346,7 @@
             {
                 code: "RSC00031",
                 name: "AISHAH MAZLAN",
+                pic: "uploads/1792045708_RSC00031.jpg",
                 p: 4, c: 1, q: 7, nc: 22, bop: 1,
                 mtd: 4500, ytd: 89200, totalTpc: 89200, totalCases: 14,
                 isCurrentUser: false
@@ -242,12 +354,12 @@
         ];
 
         function getAgentsData() {
-            const saved = localStorage.getItem('saft_demo_agents');
+            const saved = localStorage.getItem('saft_demo_agents_v3');
             return saved ? JSON.parse(saved) : JSON.parse(JSON.stringify(defaultAgents));
         }
 
         function saveAgentsData(data) {
-            localStorage.setItem('saft_demo_agents', JSON.stringify(data));
+            localStorage.setItem('saft_demo_agents_v3', JSON.stringify(data));
         }
 
         function formatNum(num) {
@@ -267,10 +379,18 @@
             const me = agents.find(a => a.isCurrentUser);
 
             if (me) {
-                const avatarUrl = `https://ui-avatars.com/api/?name=${encodeURIComponent(me.name)}&background=5B3E7D&color=fff`;
+                const fallbackAvatar = generateInitialsAvatar(me.name);
+                const picSrc = me.pic ? me.pic : fallbackAvatar;
+
+                const navImg = document.getElementById('navProfilePic');
+                navImg.src = picSrc;
+                navImg.onerror = function() { this.src = fallbackAvatar; };
+
+                const modalImg = document.getElementById('modalProfilePic');
+                modalImg.src = picSrc;
+                modalImg.onerror = function() { this.src = fallbackAvatar; };
+
                 document.getElementById('navAgentName').textContent = me.name;
-                document.getElementById('navProfilePic').src = avatarUrl;
-                document.getElementById('modalProfilePic').src = avatarUrl;
                 document.getElementById('inputAgentName').value = me.name;
 
                 document.getElementById('cardP').textContent = formatNum(me.p);
@@ -292,7 +412,6 @@
                 document.getElementById('inputTotalCases').value = me.totalCases;
             }
 
-            // Susun Leaderboard mengikut YTD tertinggi
             const sorted = [...agents].sort((a, b) => b.ytd - a.ytd);
             const tbody = document.getElementById('leaderboardBody');
             tbody.innerHTML = '';
@@ -304,26 +423,29 @@
                 else if (rank === 2) rankBadge = "🥈 #2";
                 else if (rank === 3) rankBadge = "🥉 #3";
 
-                const pic = `https://ui-avatars.com/api/?name=${encodeURIComponent(agent.name)}&background=5B3E7D&color=fff`;
-                const rowClass = agent.isCurrentUser ? 'bg-purple-50 font-semibold border-l-4 border-[#5B3E7D]' : 'hover:bg-gray-50';
+                const fallback = generateInitialsAvatar(agent.name);
+                const pic = agent.pic ? agent.pic : fallback;
+                const rowClass = agent.isCurrentUser 
+                    ? 'bg-purple-500/10 dark:bg-purple-400/10 font-semibold border-l-4 border-zinc-900 dark:border-white' 
+                    : 'hover:bg-white/40 dark:hover:bg-white/5';
 
                 tbody.innerHTML += `
                     <tr class="${rowClass} transition">
-                        <td class="py-3 px-3 font-bold text-gray-900">${rankBadge}</td>
-                        <td class="py-3 px-3 flex items-center gap-2">
-                            <img src="${pic}" alt="Agent Pic" class="w-8 h-8 rounded-full object-cover border border-purple-400 shadow-sm">
+                        <td class="py-3.5 px-3 font-extrabold">${rankBadge}</td>
+                        <td class="py-3.5 px-3 flex items-center gap-2.5">
+                            <img src="${pic}" onerror="this.src='${fallback}'" alt="" class="w-8 h-8 rounded-full object-cover border border-gray-400/50 shadow-sm shrink-0">
                             <div>
-                                <p class="font-bold text-gray-900">${agent.name}</p>
-                                <span class="text-[10px] text-gray-500 font-normal">${agent.code}</span>
+                                <p class="font-bold">${agent.name}</p>
+                                <span class="text-[10px] text-gray-500 dark:text-zinc-400 font-normal">${agent.code}</span>
                             </div>
                         </td>
-                        <td class="py-3 px-3 text-center font-bold text-[#5B3E7D]">${formatNum(agent.p)}</td>
-                        <td class="py-3 px-3 text-center font-medium">${formatNum(agent.c)}</td>
-                        <td class="py-3 px-3 text-center font-medium">${formatNum(agent.q)}</td>
-                        <td class="py-3 px-3 text-center font-bold text-emerald-700">${formatNum(agent.nc)}</td>
-                        <td class="py-3 px-3 text-center text-blue-800 font-bold">${formatNum(agent.bop)}</td>
-                        <td class="py-3 px-3 text-right text-emerald-700 font-bold">${formatNum(agent.mtd)}</td>
-                        <td class="py-3 px-3 text-right font-extrabold text-[#5B3E7D]">${formatNum(agent.ytd)}</td>
+                        <td class="py-3.5 px-3 text-center font-bold">${formatNum(agent.p)}</td>
+                        <td class="py-3.5 px-3 text-center font-medium">${formatNum(agent.c)}</td>
+                        <td class="py-3.5 px-3 text-center font-medium">${formatNum(agent.q)}</td>
+                        <td class="py-3.5 px-3 text-center font-bold text-emerald-600 dark:text-emerald-400">${formatNum(agent.nc)}</td>
+                        <td class="py-3.5 px-3 text-center text-blue-600 dark:text-blue-400 font-bold">${formatNum(agent.bop)}</td>
+                        <td class="py-3.5 px-3 text-right text-emerald-600 dark:text-emerald-400 font-bold">${formatNum(agent.mtd)}</td>
+                        <td class="py-3.5 px-3 text-right font-black text-purple-700 dark:text-purple-400">${formatNum(agent.ytd)}</td>
                     </tr>
                 `;
             });
@@ -363,7 +485,7 @@
         }
 
         function resetDemoData() {
-            localStorage.removeItem('saft_demo_agents');
+            localStorage.removeItem('saft_demo_agents_v3');
             renderDashboard();
             showToast("Data demo telah ditetapkan semula.");
         }
@@ -375,7 +497,6 @@
             document.getElementById('profileModal').classList.add('hidden');
         }
 
-        // Papar bulan semasa secara automatik
         const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
         const now = new Date();
         document.getElementById('currentMonthLabel').textContent = `${monthNames[now.getMonth()]} ${now.getFullYear()}`;
